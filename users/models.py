@@ -12,18 +12,18 @@ class User(AbstractUser):
         USER = 'User'
 
     email = models.EmailField(max_length=500 , unique=True)
-    name = models.CharField(max_length=100 )
+    username = models.CharField(max_length=100 )
     image = models.ImageField(upload_to='user_image' , blank=True)
     user_type = models.CharField(max_length=50 , choices=UserType.choices , default=UserType.USER)
     code = models.CharField(max_length=50 , blank=True)
     code_expire_date = models.DateTimeField(blank=True, null=True)
 
-    username = None
+    # username = None
     first_name = None
     last_name = None
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["user_type","name"]
+    REQUIRED_FIELDS = ["user_type","username"]
 
     def __str__(self)-> str:
         return self.email
