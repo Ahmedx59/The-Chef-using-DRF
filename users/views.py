@@ -2,7 +2,7 @@ from rest_framework.decorators import action
 from rest_framework import mixins , viewsets , status
 from rest_framework.response import Response 
 from .models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer , ChangePasswordSerializer
 
 
 
@@ -22,5 +22,9 @@ class UserViewSet(
         serializer = UserSerializer(user)
         return Response(serializer.data , status=status.HTTP_200_OK)
 
-
+class PasswordViewSet(
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet):
+    
+    serializer_class = ChangePasswordSerializer
     
