@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from rest_framework import viewsets , mixins 
 from .models import Restaurant
-from .serializers import RestaurantListSerializers ,RestaurantDetailSerializer
+from .serializers import RestaurantListSerializers ,RestaurantDetailUpdateSerializer
 class RestaurantViewSet(
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
     viewsets.GenericViewSet):
 
     queryset = Restaurant.objects.all()
@@ -13,5 +14,5 @@ class RestaurantViewSet(
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
-            return RestaurantDetailSerializer
+            return RestaurantDetailUpdateSerializer
         return super().get_serializer_class()
