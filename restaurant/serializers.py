@@ -6,3 +6,8 @@ class RestaurantListSerializers(serializers.ModelSerializer):
         model = Restaurant
         fields = ['name','image','desc']
         
+
+class RestaurantDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Restaurant
+        fields = '__all__'

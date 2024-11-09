@@ -10,3 +10,8 @@ class RestaurantViewSet(
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantListSerializers 
 
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return RestaurantDetailSerializer
+        return super().get_serializer_class()
