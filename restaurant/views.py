@@ -13,6 +13,6 @@ class RestaurantViewSet(
 
 
     def get_serializer_class(self):
-        if self.action == 'retrieve':
+        if self.action == ['retrieve','update']:
             return RestaurantDetailUpdateSerializer
         return super().get_serializer_class()
