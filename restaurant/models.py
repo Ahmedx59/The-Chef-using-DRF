@@ -17,11 +17,24 @@ class Restaurant(models.Model):
         return self.name
 
 class Table(models.Model):
-    restaurant = models.ForeignKey("Restaurant", verbose_name=_(""), on_delete=models.CASCADE)
-    table_type = models.FloatField(_(""),blank=True, null=True)
+    class TableType(models.TextChoices):
+        NORMAL = 'Normal'
+        VIB = 'Vib'
+
+    class TableAvailable(models.TextChoices):
+        AVAILABLE = 'Available'
+        RESERVED = 'Reserved'
+
+    restaurant = models.ForeignKey(Restaurant,on_delete=models.CASCADE , related_name='restaurant_table')
+    table_type = models.CharField(_(""), max_length=50, choices=TableType.choices , default=TableType.NORMAL)
     number = models.IntegerField(_(""),blank=True, null=True) 
-    available = models.FloatField(_(""),blank=True, null=True)
-    max_people = ''
+    available = models.CharField(_(""), max_length=50 , choices=TableAvailable.choices , default=TableAvailable.RESERVED)
+    max_people = models.IntegerField(_(""),blank=True, null=True)
+
+    # def __str__(self):
+    #     return self.restaurant
+    
 
     def __str__(self):
-        return self.restaurant
+        # Return the restaurant name and table type for clarity
+        return f"{self.restaurant.name} - Table {self.number} ({self.table_type})"
