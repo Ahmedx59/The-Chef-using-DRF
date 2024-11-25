@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets , mixins 
 from .models import Restaurant , Table
-from .serializers import RestaurantListSerializers ,RestaurantDetailUpdateSerializer ,TableListSerializer
+from .serializers import RestaurantListSerializers ,RestaurantDetailSerializer ,TableListSerializer ,RestaurantUpdateSerializers
 class RestaurantViewSet(
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
@@ -13,8 +13,11 @@ class RestaurantViewSet(
 
 
     def get_serializer_class(self):
-        if self.action == ['retrieve','update']:
-            return RestaurantDetailUpdateSerializer
+        if self.action == 'retrieve':
+            return RestaurantDetailSerializer
+        if self.action == 'update':
+            return RestaurantUpdateSerializers
+        
         return super().get_serializer_class()
     
 

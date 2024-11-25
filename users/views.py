@@ -17,14 +17,18 @@ class UserViewSet(
 
     @action(detail=False , methods=['GET'])
     def profile(self , request):
-        # user = request.user
-        user = User.objects.get(id = 1)
+        user = request.user
+        # user = User.objects.get(id = 1)
         serializer = UserSerializer(user)
         return Response(serializer.data , status=status.HTTP_200_OK)
 
-class PasswordViewSet(
-    mixins.CreateModelMixin,
-    viewsets.GenericViewSet):
+class AuthViewSet(viewsets.GenericViewSet):
     
     serializer_class = ChangePasswordSerializer
     
+
+    @action(detail=True , methods=['POST'])
+    def changepassword(self , request):
+        user = request.user
+        serializer = ChangePasswordSerializer(user)
+        return Response(serializer.data)

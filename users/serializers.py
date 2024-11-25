@@ -10,7 +10,6 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'username',
             'image',
-            'user_type',
             'date_joined',
         ]
 
@@ -18,14 +17,17 @@ class UserSerializer(serializers.ModelSerializer):
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
-    confirm_new_password = serializers.CharField(required=True )
+    confirm_new_password = serializers.CharField(required=True)
     
-    def create(self, validated_data):
-        user = User.objects.get(id=1)
-        if not check_password(validated_data['old_password'] != user.password):
-            raise serializers.ValidationError({'message':'old password not equal password'})
-        if not check_password(validated_data['new_password']) != check_password(validated_data['confirm_new_password']):
-            raise serializers.ValidationError({'message':'New Password and Confirm New Password do not match.'})
+    def create(self, validated_data):#2024-11-25 18:34:26.152552+00:00
+
+        user = self.context['request'].user
+
+        if not check_password(validated_data['old_password'], user.password):
+            raise serializers.ValidationError({'message':'old password not correct'})
+        
+        if validated_data['new_password'] != validated_data['confirm_new_password']:
+            raise serializers.ValidationError({'message':'The New Passwords do not match.'})
         
         user.set_password(validated_data['new_password'])
         user.save()
