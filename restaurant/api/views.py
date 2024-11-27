@@ -1,8 +1,12 @@
 from django.shortcuts import render
 from rest_framework import viewsets , mixins 
-from ..models import Restaurant , Table
-from .serializers import RestaurantListSerializers ,RestaurantDetailSerializer ,TableListSerializer ,RestaurantUpdateSerializers
 from rest_framework.permissions import AllowAny , IsAdminUser
+
+from core.permissions import IsSeller
+from restaurant.models import Restaurant , Table
+from .serializers import RestaurantListSerializers ,RestaurantDetailSerializer ,TableListSerializer ,RestaurantUpdateSerializers
+from users.models import User
+
 class RestaurantViewSet(
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
@@ -16,6 +20,9 @@ class RestaurantViewSet(
     def get_permissions(self):
         if self.action == 'list':
             return [AllowAny()]
+        
+        if self.action in ['update','partial_update','retrieve']:
+            return [IsSeller()]
         return super().get_permissions()
         
 
