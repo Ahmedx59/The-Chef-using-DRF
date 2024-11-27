@@ -17,6 +17,15 @@ class RestaurantUpdateSerializers(serializers.ModelSerializer):
         model = Restaurant
         fields = '__all__'
 
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        if instance.user != user:
+            raise serializers.ValidationError("You don't have permission to update this.")
+        return super().update(instance, validated_data)
+    
+
+
+
 
 
 
