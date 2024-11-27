@@ -44,11 +44,11 @@ Follow these steps to set up and run **TheChef** locally.
 To set up and run the Dj-Amazon-Clone project locally, please follow the instructions below:
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Omarmoatz/Dj-Amazon-Clone.git
+   git clone https://github.com/Ahmedx59/The-Chef-using-DRF.git
    ```
 2. Navigate into the project directory:
    ```bash
-   cd Dj-Amazon-Clone
+   cd The-Chef-using-DRF
    ```
 3. Install the dependencies:
    ```bash
