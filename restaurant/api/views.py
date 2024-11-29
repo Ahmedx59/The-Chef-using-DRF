@@ -8,7 +8,7 @@ from rest_framework import filters
 
 from core.permissions import IsSeller
 from restaurant.models import Restaurant , Table
-from .serializers import RestaurantListSerializers ,RestaurantDetailSerializer ,TableListSerializer ,RestaurantUpdateSerializers ,TableCreateSerializer
+from .serializers import RestaurantListSerializers ,RestaurantDetailSerializer ,TableListCreateUpdateDeleteSerializer ,RestaurantUpdateSerializers 
 from users.models import User
 
 class RestaurantViewSet(
@@ -48,20 +48,24 @@ class RestaurantViewSet(
 class TableViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     viewsets.GenericViewSet):
 
     queryset = Table.objects.all()
-    serializer_class = TableListSerializer
-
-    def get_serializer_class(self):
-        if self.action == 'create':
-            return TableCreateSerializer
-        return super().get_serializer_class()
+    serializer_class = TableListCreateUpdateDeleteSerializer
 
 
     def get_queryset(self):
         restaurant_id = self.kwargs['restaurant_id']  
         return super().get_queryset().filter(restaurant_id=restaurant_id , available = True )
     
-
+      
+    def get_permissions(self):
+        if self.action == 'list':
+            return [AllowAny()]
+        
+        if self.action in ['update','partial_update','create','destroy']:
+            return [IsSeller()]
+        return super().get_permissions()
 

@@ -8,6 +8,7 @@ class RestaurantListSerializers(serializers.ModelSerializer):
         
 
 class RestaurantDetailSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Restaurant
         fields = '__all__'
@@ -31,7 +32,9 @@ class RestaurantUpdateSerializers(serializers.ModelSerializer):
 
 
 
-class TableListSerializer(serializers.ModelSerializer):
+class TableListCreateUpdateDeleteSerializer(serializers.ModelSerializer):
     class Meta:
         model =  Table
         fields = '__all__'
+
+
