@@ -1,10 +1,14 @@
 from django.shortcuts import render
 from rest_framework import viewsets , mixins 
 from rest_framework.permissions import AllowAny , IsAdminUser
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+
+
 
 from core.permissions import IsSeller
 from restaurant.models import Restaurant , Table
-from .serializers import RestaurantListSerializers ,RestaurantDetailSerializer ,TableListSerializer ,RestaurantUpdateSerializers
+from .serializers import RestaurantListSerializers ,RestaurantDetailSerializer ,TableListSerializer ,RestaurantUpdateSerializers ,TableCreateSerializer
 from users.models import User
 
 class RestaurantViewSet(
@@ -15,6 +19,9 @@ class RestaurantViewSet(
 
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantListSerializers 
+    filter_backends = [DjangoFilterBackend,filters.SearchFilter]
+    filterset_fields = ['tag']
+    search_fields = ['name','min_price']
     # permission_classes = [AllowAny]
 
     def get_permissions(self):
@@ -40,7 +47,21 @@ class RestaurantViewSet(
 
 class TableViewSet(
     mixins.ListModelMixin,
+    mixins.CreateModelMixin,
     viewsets.GenericViewSet):
 
     queryset = Table.objects.all()
     serializer_class = TableListSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return TableCreateSerializer
+        return super().get_serializer_class()
+
+
+    def get_queryset(self):
+        restaurant_id = self.kwargs['restaurant_id']  
+        return super().get_queryset().filter(restaurant_id=restaurant_id , available = True )
+    
+
+

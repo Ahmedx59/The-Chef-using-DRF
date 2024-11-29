@@ -5,8 +5,6 @@ from .api.views import RestaurantViewSet , TableViewSet
 router = DefaultRouter()
 
 router.register('restaurants' , RestaurantViewSet)
-router.register('tables' , TableViewSet)
-
-
+router.register(r'restaurants/(?P<restaurant_id>\d+)/tables' ,TableViewSet)
 
 urlpatterns = router.urls
