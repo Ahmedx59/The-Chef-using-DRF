@@ -12,8 +12,8 @@ from .serializers import RestaurantListSerializers ,RestaurantDetailSerializer ,
 from users.models import User
 
 class RestaurantViewSet(
-    mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     viewsets.GenericViewSet):
 
@@ -59,13 +59,10 @@ class TableViewSet(
     def get_queryset(self):
         restaurant_id = self.kwargs['restaurant_id']  
         return super().get_queryset().filter(restaurant_id=restaurant_id , available = True )
-    
-      
-    def get_permissions(self):
-        if self.action == 'list':
-            return [AllowAny()]
+
         
-        if self.action in ['update','partial_update','create','destroy']:
+    def get_permissions(self):
+        if self.action in ['list','update','partial_update','create','destroy']:
             return [IsSeller()]
         return super().get_permissions()
 
