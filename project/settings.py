@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     
     'users',
     'restaurant',
+    'meals',
 ]
 
 REST_FRAMEWORK = {
