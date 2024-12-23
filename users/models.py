@@ -29,8 +29,8 @@ class User(AbstractUser):
         return self.email
     
 
-    def save(self, *args, **kwargs):
-        if not self.code:
-            self.code = get_random_string(20)
+    # def save(self, *args, **kwargs):
+    #     if not self.code:
+    #         self.code = get_random_string(20)
        
-        super().save(*args, **kwargs)
+    #     super().save(*args, **kwargs)

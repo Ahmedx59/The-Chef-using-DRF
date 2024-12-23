@@ -28,7 +28,7 @@ class RestaurantViewSet(
         if self.action == 'list':
             return [AllowAny()]
         
-        if self.action in ['update','partial_update','retrieve']:
+        if self.action in ['update','partial_update','retrieve' , 'create']:
             return [IsSeller()]
         return super().get_permissions()
         
