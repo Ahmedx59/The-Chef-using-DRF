@@ -26,7 +26,7 @@ class Restaurant(models.Model):
     logo = models.ImageField(upload_to='restaurant/logo/',blank=True, null=True)
     min_price = models.FloatField(blank=True, null=True)
     tag = models.CharField(max_length=50 , choices=TagChoices.choices )
-    created_at = models.DateTimeField(auto_now_add=False)
+    created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.name
 

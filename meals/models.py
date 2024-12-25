@@ -28,7 +28,7 @@ class Chief (models.Model):
 
 
     name = models.CharField(max_length=50)
-    image = models.ImageField(upload_to='chief/')
+    image = models.ImageField(upload_to='chief/',blank=True, null=True)
     gender = models.CharField(max_length=50 , choices= GenderType.choices )
     years_of_experience = models.IntegerField()
 
