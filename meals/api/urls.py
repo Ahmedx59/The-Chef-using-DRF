@@ -4,5 +4,5 @@ from .views import MealsVewSet
 
 router = DefaultRouter()
 
-router.register('meals-viewsets' , MealsVewSet)
+router.register(r'restaurants/(?P<restaurant_id>\d+)/meals' , MealsVewSet)
 urlpatterns = router.urls
