@@ -22,7 +22,6 @@ class MealsVewSet(viewsets.ModelViewSet):
         if self.action == 'retrieve':
             return MealsRetrieveSerializer
         if self.action in ['create','update','partial_update','destroy', 'delete']:
-            print('/'*100)
             return MealsCreateUpdateDeleteSerializer
         
         return super().get_serializer_class()

@@ -19,18 +19,11 @@ class MealsCreateUpdateDeleteSerializer(serializers.ModelSerializer):
         exclude = ('restaurant',)
 
     def validate(self, attrs):
-        print('/'*100)
-
-
         user = self.context['request'].user
         restaurant_id = self.context['view'].kwargs['restaurant_id']
         restaurant = Restaurant.objects.get(id = restaurant_id)
 
-        print('/'*100)
-
         if not user == restaurant.user:
-            print('/'*100)
-
             raise serializers.ValidationError({'detail':'you cant do any action on this restaurant'}) 
         
         return super().validate(attrs)
