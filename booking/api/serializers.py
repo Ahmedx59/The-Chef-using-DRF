@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
+from datetime import datetime
 
 from booking.models import Booking
 from restaurant.models import Restaurant
@@ -17,7 +18,7 @@ class RetrieveBookingSerializer(serializers.ModelSerializer):
         model = Booking
         fields = '__all__'
 
-class CreateUpdateSerializer(serializers.ModelSerializer):
+class CreateBookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = ('start_date','end_date','coupon','table')
@@ -52,3 +53,17 @@ class CreateUpdateSerializer(serializers.ModelSerializer):
 
 
         return super().create(validated_data)
+    
+class UpdateBookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = ('start_date','end_date','table')
+
+    def update(self, instance, validated_data):
+        # print(validated_data['start_date'])
+        # print(datetime.now())
+        # deadline = validated_data['start_date'] - datetime.now()
+        # print(deadline,"X"*100)
+        # # if validated_data['start_date'] - datetime.now():
+        # #     raise x
+        return super().update(instance, validated_data)

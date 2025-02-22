@@ -6,13 +6,15 @@ from booking.models import Booking
 from .serializers import (
     ListBookingSerializer,
     RetrieveBookingSerializer,
-    CreateUpdateSerializer,
+    CreateBookingSerializer,
+    UpdateBookingSerializer,
                           
 )
 
 class BookingViewSet(mixins.ListModelMixin,
               mixins.RetrieveModelMixin,
               mixins.CreateModelMixin,
+              mixins.UpdateModelMixin,
     viewsets.GenericViewSet
     ):
     queryset = Booking.objects.all()
@@ -22,5 +24,8 @@ class BookingViewSet(mixins.ListModelMixin,
         if self.action == 'retrieve':
             return RetrieveBookingSerializer
         if self.action == 'create':
-            return CreateUpdateSerializer
+            return CreateBookingSerializer
+        if self.action in ('update','partial_update'):
+            print("x"*100)
+            return UpdateBookingSerializer
         return super().get_serializer_class()

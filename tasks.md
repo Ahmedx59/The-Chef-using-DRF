@@ -27,3 +27,6 @@ task 4
 - add endpoint for meals(list - detail - update - create - delete):(X)
 		- list: view only meals of the same resturant (X)
 		- update, create, delete: only the resturant owner can do them
+
+	
+seller dashboard
