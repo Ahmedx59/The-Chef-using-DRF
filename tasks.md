@@ -30,3 +30,33 @@ task 4
 
 	
 seller dashboard
+
+
+
+
+app order :
+
+
+
+cart:
+    user
+    total
+    coupon
+    total_after_coupon
+    is_completed
+
+meals detail:
+    cart
+    meal
+    quantity
+    price
+    total
+
+order:
+    cart
+    code
+    status
+    created_at
+    delivery_time
+    delivery_location
+    
