@@ -57,5 +57,8 @@ class CreateCartSerializer(serializers.Serializer):
     def to_representation(self, instance):
         return RetrieveCartSerializer(instance).data
     
-
-
+    
+class OrderListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = "__all__"

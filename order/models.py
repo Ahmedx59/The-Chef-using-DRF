@@ -37,7 +37,7 @@ class Order(models.Model):
     order_status = models.CharField(max_length=50)
     total_price = models.IntegerField(max_length=50)
     payment_status = models.CharField(max_length=50)
-    total_after_coupon = models.FloatField()
+    total_after_coupon = models.FloatField(blank=True, null=True)
     created_at = models.TimeField(auto_now=True)
     delivery_time = models.TimeField()
     delivery_location = models.CharField(max_length=50 , blank=True, null=True)

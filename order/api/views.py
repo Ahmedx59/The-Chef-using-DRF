@@ -1,11 +1,14 @@
-from django.shortcuts import render
- 
 from rest_framework import mixins , viewsets
 
-from order.models import Cart
+from django.shortcuts import render
+ 
+from order.models import Cart , Order
+
+
 from order.api.serializer import (
     RetrieveCartSerializer ,
     CreateCartSerializer,
+    OrderListSerializer,
 
 )
 class CartViewSet(
@@ -20,3 +23,12 @@ class CartViewSet(
         if self.action == 'create':
             return CreateCartSerializer
         return super().get_serializer_class()
+    
+
+
+class OrderViewSet(
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet):
+
+    queryset = Order.objects.all()
+    serializer_class = OrderListSerializer
