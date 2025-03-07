@@ -10,17 +10,17 @@ class Cart(models.Model):
     is_completed = models.BooleanField(default=False)
     coupon = models.ForeignKey(Coupon , related_name='cart_coupon', on_delete=models.CASCADE , blank=True, null=True)
     total_after_coupon = models.FloatField(blank=True, null=True)
-    total = models.FloatField()
+    total = models.FloatField(default=0,blank=True, null=True)
 
     def __str__(self):
         return str(self.user)
 
-def cart_total(self):
-    return round(sum(item.total or 0 for item in self.cart_detail.all()), 2)
+    def cart_total(self):
+        return round(sum(item.total or 0 for item in self.cart_item.all()), 2)
 
-class MealsDetail(models.Model):
-    cart = models.ForeignKey(Cart , related_name='cart_detail' , on_delete=models.CASCADE)
-    meal = models.ForeignKey(Meals , related_name='cart_meals', on_delete=models.CASCADE)
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart , related_name='cart_item' , on_delete=models.CASCADE)
+    meal = models.ForeignKey(Meals , related_name='cart_item', on_delete=models.SET_NULL , blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
     price = models.IntegerField(default=0)
     total = models.FloatField(blank=True, null=True , default=0)
@@ -30,18 +30,23 @@ class MealsDetail(models.Model):
 
 
 class Order(models.Model):
-    cart = models.ForeignKey(Cart , related_name='order_cart',on_delete=models.CASCADE)
-    meals_detail = models.ForeignKey(MealsDetail , related_name='meals_detail_order', on_delete=models.CASCADE)
-    coupon_id = models.ForeignKey(Coupon , on_delete=models.CASCADE , blank=True, null=True)
+    user = models.ForeignKey(User , related_name='order' , on_delete=models.CASCADE)
     code = models.CharField(max_length=50)
     order_status = models.CharField(max_length=50)
     total_price = models.IntegerField(max_length=50)
     payment_status = models.CharField(max_length=50)
+    coupon = models.ForeignKey(Coupon ,on_delete=models.SET_NULL ,related_name="order", blank=True, null=True)
     total_after_coupon = models.FloatField(blank=True, null=True)
     created_at = models.TimeField(auto_now=True)
     delivery_time = models.TimeField()
     delivery_location = models.CharField(max_length=50 , blank=True, null=True)
-    
 
     def __str__(self):
         return str(self.cart)
+    
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order,related_name='order_item', on_delete=models.CASCADE)
+    meal = models.ForeignKey(Meals , related_name='order_item',on_delete=models.SET_NULL , blank=True, null=True)
+    quantity = models.IntegerField(blank=True, null=True)
+    price = models.IntegerField(default=0)
+    total = models.FloatField(blank=True, null=True , default=0)
