@@ -1,7 +1,8 @@
 from rest_framework import mixins , viewsets
-
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from django.shortcuts import render
- 
+
 from order.models import Cart , Order
 
 
@@ -9,11 +10,10 @@ from order.api.serializer import (
     RetrieveCartSerializer ,
     CreateCartSerializer,
     OrderListRetrieveSerializer,
-    OrderCreateSerializer,
+    OrderCreateSerializer
 
 )
 class CartViewSet(
-    mixins.RetrieveModelMixin,
     mixins.CreateModelMixin,
     viewsets.GenericViewSet):
 
@@ -29,7 +29,18 @@ class CartViewSet(
         user = self.request.user
         return super().get_queryset().filter(user = user)
     
+    @action(detail=False , methods=['get'])
+    def data(self,request , *args, **kwargs):
 
+        user = self.request.user
+        cart = Cart.objects.filter(user = user).first()
+
+        if not cart:
+            cart = Cart.objects.create(user = user)
+
+        serializer = self.get_serializer(cart)
+        return Response(serializer.data)
+    
 
 class OrderViewSet(
     mixins.ListModelMixin,

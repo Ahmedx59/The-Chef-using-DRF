@@ -9,7 +9,7 @@ class CartItemTabularInline(admin.TabularInline):
 
 class CartAdmin(admin.ModelAdmin):
     inlines = (CartItemTabularInline,)
-    list_display = ("user","is_completed","coupon",)
+    list_display = ("user","coupon",)
 
 
 

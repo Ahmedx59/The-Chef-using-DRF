@@ -1,11 +1,14 @@
 from rest_framework import serializers
 
+from django.shortcuts import get_object_or_404
+from django.utils.crypto import get_random_string
+from datetime import datetime ,timedelta
+
 from order.models import Cart , CartItem , Order , OrderItem
+from meals.api.serializers import MealsRetrieveSerializer
 from meals.models import Meals
 
-from django.shortcuts import get_object_or_404
 
-from meals.api.serializers import MealsRetrieveSerializer
 
 class RetrieveCart(serializers.ModelSerializer):
     meal = MealsRetrieveSerializer()
@@ -25,7 +28,6 @@ class RetrieveCartSerializer(serializers.ModelSerializer):
         model = Cart
         fields = (
             'user',
-            'is_completed',
             'coupon',
             'total',
             'total_after_coupon',
@@ -60,6 +62,8 @@ class CreateCartSerializer(serializers.Serializer):
     
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    meal = MealsRetrieveSerializer()
+
     class Meta:
         model = OrderItem
         fields = (
@@ -81,4 +85,36 @@ class OrderListRetrieveSerializer(serializers.ModelSerializer):
         qs = obj.order_item.all()
         return OrderItemSerializer(qs, many=True).data
 
-    
+
+class OrderCreateSerializer(serializers.Serializer):
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        cart = Cart.objects.get(user = user)
+        cart_item = CartItem.objects.filter(cart = cart)
+
+        order = Order.objects.create(
+            user=user,
+            code = get_random_string(8),
+            coupon = cart.coupon,
+            total_after_coupon = cart.total_after_coupon,
+            total_price = cart.total,
+            delivery_location = user.address,
+            delivery_time = timedelta(days=3) + datetime.now(),
+            )
+        for item in cart_item:
+            order_item = OrderItem.objects.create(
+                order = order,
+                meal = item.meal,
+                quantity = item.quantity,
+                price = item.price,
+                total = item.total,
+            )
+   
+        cart.cart_item.all().delete()
+        cart.coupon = None
+        cart.total = 0
+        cart.total_after_coupon = None
+        cart.save()
+
+        return order

@@ -13,11 +13,12 @@ class User(AbstractUser):
 
     email = models.EmailField(max_length=500 , unique=True)
     username = models.CharField(max_length=100 )
+    address = models.CharField(max_length=50 , blank=True, null=True)
     image = models.ImageField(upload_to='user_image' , blank=True)
     user_type = models.CharField(max_length=50 , choices=UserType.choices , default=UserType.USER)
     code = models.CharField(max_length=50 , blank=True)
     code_expire_date = models.DateTimeField(blank=True, null=True)
-
+    
     # username = None
     first_name = None
     last_name = None
