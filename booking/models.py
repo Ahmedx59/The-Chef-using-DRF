@@ -17,7 +17,6 @@ class Booking(models.Model):
     end_date = models.DateTimeField(blank=True, null=True)
     status = models.CharField(max_length=50 , choices=BookingStatus.choices, default=BookingStatus.ACTIVE, blank=True, null=True)
     code = models.CharField(max_length=50,blank=True, null=True)
-    coupon = models.ForeignKey("Coupon", on_delete=models.SET_NULL , related_name='booking',blank=True, null=True) 
     
 
 

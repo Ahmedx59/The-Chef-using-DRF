@@ -1,10 +1,12 @@
 from rest_framework import serializers
+
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
+
 from datetime import datetime
 
-from booking.models import Booking
+from booking.models import Booking , Coupon
 from restaurant.models import Restaurant
 
 class ListBookingSerializer(serializers.ModelSerializer):
@@ -21,7 +23,11 @@ class RetrieveBookingSerializer(serializers.ModelSerializer):
 class CreateBookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
-        fields = ('start_date','end_date','coupon','table')
+        fields = (
+            'start_date',
+            'end_date',
+            'table'
+            )
 
     def create(self, validated_data):
         user = self.context['request'].user
@@ -33,10 +39,10 @@ class CreateBookingSerializer(serializers.ModelSerializer):
         validated_data['restaurant']= restaurant
         validated_data['code']= code
         validated_data['user']=user
+
         table = validated_data['table'].title
         start_date = validated_data['start_date']
         end_date = validated_data['end_date']
-        coupon_discount = validated_data.get('coupon')
 
         send_mail(
             "Booking Confirmation",
@@ -45,19 +51,21 @@ class CreateBookingSerializer(serializers.ModelSerializer):
             f"table : { table} \n"
             f"start_date : {start_date} \n"
             f"end_date : {end_date} \n"
-            f"coupon discount : {coupon_discount} \n"
             f"code : {code} \n",
             'Company_mail@mail.com',
             [user.email]   
         )
-
-
+        
         return super().create(validated_data)
     
 class UpdateBookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
-        fields = ('start_date','end_date','table')
+        fields = (
+            'start_date',
+            'end_date',
+            'table'
+            )
 
     def update(self, instance, validated_data):
         # print(validated_data['start_date'])
@@ -67,3 +75,8 @@ class UpdateBookingSerializer(serializers.ModelSerializer):
         # # if validated_data['start_date'] - datetime.now():
         # #     raise x
         return super().update(instance, validated_data)
+    
+class CouponSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coupon
+        fields = "__all__"

@@ -13,9 +13,8 @@ class Meals(models.Model):
     price = models.IntegerField()
     image = models.ImageField(upload_to='meals_image/' , blank=True, null=True)
     size = models.CharField(max_length=50 , blank=True, null=True)
-    quantity = models.IntegerField()
     preparation_time = models.TimeField()
-    desc = models.TextField()
+    description = models.TextField()
     offer = models.CharField(max_length=50 , blank=True, null=True)
     tag = models.CharField(max_length=50 , choices= TagChoices.choices , default = TagChoices.NEW )
 

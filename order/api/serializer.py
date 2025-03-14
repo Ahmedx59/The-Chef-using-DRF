@@ -1,4 +1,5 @@
 from rest_framework import serializers
+# from drf_yasg.openapi import s
 
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
@@ -7,10 +8,11 @@ from datetime import datetime ,timedelta
 from order.models import Cart , CartItem , Order , OrderItem
 from meals.api.serializers import MealsRetrieveSerializer
 from meals.models import Meals
+from booking.models import Coupon
 
 
 
-class RetrieveCart(serializers.ModelSerializer):
+class CartItemsSerializer(serializers.ModelSerializer):
     meal = MealsRetrieveSerializer()
     class Meta:
         model = CartItem
@@ -23,20 +25,18 @@ class RetrieveCart(serializers.ModelSerializer):
 
 class RetrieveCartSerializer(serializers.ModelSerializer):
     # meals_detail = serializers.PrimaryKeyRelatedField(queryset = MealsDetail.objects.all() , many = True)
-    meals_detail = serializers.SerializerMethodField()
+    cart_item = CartItemsSerializer(many = True)
     class Meta:
         model = Cart
         fields = (
             'user',
-            'coupon',
             'total',
-            'total_after_coupon',
-            'meals_detail',
+            'cart_item',
         )
 
-    def get_meals_detail(self, obj):
-        qs = obj.cart_item.all()
-        return RetrieveCart(qs, many=True).data
+    # def get_meals_detail(self, obj):
+    #     qs = obj.cart_item.all()
+    #     return RetrieveCart(qs, many=True).data
     
 class CreateCartSerializer(serializers.Serializer):
     meal = serializers.IntegerField(required = True)
@@ -49,12 +49,12 @@ class CreateCartSerializer(serializers.Serializer):
         quantity = validated_data['quantity']
         
         cart , created = Cart.objects.get_or_create(user = user)
-        meals_detail , created = CartItem.objects.get_or_create(cart = cart , meal = meal)
+        cart_items , created = CartItem.objects.get_or_create(cart = cart , meal = meal)
         
-        meals_detail.quantity = quantity
-        meals_detail.price = meal.price
-        meals_detail.total = round(quantity *meal.price , 2)
-        meals_detail.save()
+        cart_items.quantity = quantity
+        cart_items.price = meal.price
+        cart_items.total = round(quantity *meal.price , 2)
+        cart_items.save()
         return cart
     
     def to_representation(self, instance):
@@ -79,7 +79,19 @@ class OrderListRetrieveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = "__all__"
+        fields = (
+            'user',
+            'code',
+            'order_status',
+            'total_price',
+            'is_paid',
+            'coupon',
+            'total_after_coupon',
+            'created_at',
+            'delivery_time',
+            'delivery_location',
+            'order_item',    
+        )
 
     def get_order_item(self, obj):
         qs = obj.order_item.all()
@@ -87,17 +99,21 @@ class OrderListRetrieveSerializer(serializers.ModelSerializer):
 
 
 class OrderCreateSerializer(serializers.Serializer):
+    coupon = serializers.IntegerField()
 
     def create(self, validated_data):
         user = self.context['request'].user
         cart = Cart.objects.get(user = user)
         cart_item = CartItem.objects.filter(cart = cart)
+        coupon = Coupon.objects.filter(id = validated_data['coupon']).first()
 
+        if not cart_item:
+            raise serializers.ValidationError({"message","add meal in cart first"})
+        
         order = Order.objects.create(
             user=user,
             code = get_random_string(8),
-            coupon = cart.coupon,
-            total_after_coupon = cart.total_after_coupon,
+            coupon = coupon,
             total_price = cart.total,
             delivery_location = user.address,
             delivery_time = timedelta(days=3) + datetime.now(),
@@ -112,9 +128,7 @@ class OrderCreateSerializer(serializers.Serializer):
             )
    
         cart.cart_item.all().delete()
-        cart.coupon = None
         cart.total = 0
-        cart.total_after_coupon = None
         cart.save()
 
         return order

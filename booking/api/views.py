@@ -2,12 +2,14 @@ from rest_framework import mixins , viewsets
 
 from django.shortcuts import render
 
-from booking.models import Booking
+from booking.models import Booking , Coupon
+
 from .serializers import (
     ListBookingSerializer,
     RetrieveBookingSerializer,
     CreateBookingSerializer,
     UpdateBookingSerializer,
+    CouponSerializer,
                           
 )
 
@@ -26,6 +28,9 @@ class BookingViewSet(mixins.ListModelMixin,
         if self.action == 'create':
             return CreateBookingSerializer
         if self.action in ('update','partial_update'):
-            print("x"*100)
             return UpdateBookingSerializer
         return super().get_serializer_class()
+    
+class CouponViewSet(viewsets.ModelViewSet):
+    queryset = Coupon.objects.all()
+    serializer_class = CouponSerializer
