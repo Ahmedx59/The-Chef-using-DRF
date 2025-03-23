@@ -86,7 +86,7 @@ class OrderListRetrieveSerializer(serializers.ModelSerializer):
             'total_price',
             'is_paid',
             'coupon',
-            'total_after_coupon',
+            'total_after_discount',
             'created_at',
             'delivery_time',
             'delivery_location',

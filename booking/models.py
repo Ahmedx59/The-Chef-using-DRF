@@ -18,6 +18,8 @@ class Booking(models.Model):
     status = models.CharField(max_length=50 , choices=BookingStatus.choices, default=BookingStatus.ACTIVE, blank=True, null=True)
     code = models.CharField(max_length=50,blank=True, null=True)
     
+    def __str__(self):
+        return str(self.user)
 
 
 class Coupon(models.Model): 
@@ -26,3 +28,6 @@ class Coupon(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     discount = models.DecimalField(max_digits=3, decimal_places=1) 
+
+
+
