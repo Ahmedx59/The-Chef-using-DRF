@@ -61,7 +61,7 @@ class Order(models.Model):
     delivery_location = models.CharField(max_length=50 , blank=True, null=True)
 
     def __str__(self):
-        return str(self.user)
+        return f"order {str(self.id)}"
     
     def save(self, *args, **kwargs):
        self.total_after_discount()
