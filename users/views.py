@@ -33,14 +33,13 @@ class UserViewSet(
         return Response(serializer.data , status=status.HTTP_200_OK)
     
 
-    @action(detail=True , methods=['post'] , serializer_class = ActivateSerializer )
-    def activate(self,request,*args, **kwargs):
-        data  = request.data
+    @action(detail = True , methods=['post'] , serializer_class = ActivateSerializer)
+    def activate(self , request , *args, **kwargs):
+        data = self.request.data
         serializer = self.get_serializer(data = data)
-        serializer.is_valid(raise_exception=True)
+        serializer.is_valid(raise_exception = True)
         serializer.save()
-        return Response({'message':'Your Account Activated Successfully'})
-    
+        return Response({"message":"Your Acount Activated Successfully"})  
 class AuthViewSet(viewsets.GenericViewSet):
     
     serializer_class = ChangePasswordSerializer

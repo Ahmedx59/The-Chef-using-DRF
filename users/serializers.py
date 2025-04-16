@@ -69,12 +69,12 @@ class ActivateSerializer(serializers.Serializer):
         user = User.objects.get(id = user_id)
 
         if user.code != validated_data['code']:
-            raise serializers.ValidationError({'message':'code is not correct'})
+            raise serializers.ValidationError({"message":"invalid code"})
         
         user.is_active = True
         user.code = ''
         user.save()
-        
+
         return {}
 
 
